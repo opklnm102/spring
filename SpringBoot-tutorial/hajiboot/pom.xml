@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.example</groupId>
+	<artifactId>hajiboot</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>hajiboot</name>
+	<url>http://maven.apache.org</url>
+
+	<!-- 스프링부트의 설정정보를 상속 여기서 지정한 버전이 스프링부트의 버전이 된다. -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.4.RELEASE</version>
+	</parent>
+
+	<dependencies>
+		<!-- 스프링부트로 웹 애플리케이션을 만들 때 참조할 기본 라이브러리 정보를 설정 이렇게 쓰기만 해도 관련 라이브러리를 이용 
+			가능 버전은 위에 정의되어있다. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- 스프링 부트로 제작하는 과정에서 유닛테스트에 필요한 라이브러리 참조 정보를 설정 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- 스프링부트로 제작한 애플리케이션을 간단하게 빌드하고 실행하기 위해 메이븐 플러그인 설정 -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- 스프링 로디드 설정 -->
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>springloaded</artifactId>
+						<version>1.2.3.RELEASE</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- 자바8을 쓸 수 있도록 설정 -->
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<project name="2-1" basedir="." default="run">
+	
+	<property name="src.dir" value="src"/>
+	<property name="lib.dir" value="lib"/>
+	<property name="classes.dir" value="classes"/>
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<target name="init" description="작업디렉토리를 초기화합니다.">
+		<delete dir="${classes.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+	</target>
+
+	<target name="compile" depends="init" description="컴파일합니다">
+		<javac destdir="${classes.dir}" debug="on" debuglevel="lines, vars, source"
+			includeantruntime="false">
+			<src path="${src.dir}"/>
+			<classpath refid="classpath"/>
+		</javac>
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml" />
+			</fileset>	
+		</copy>
+	</target>
+	
+	<target name="run" depends="compile" description="어플리케이션을 기동합니다.">
+		<java classname="ui.MenuUi" classpath="${classes.dir}" classpathref="classpath"></java>
+	</target>
+	
+</project>

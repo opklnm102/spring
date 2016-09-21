@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean"
+		p:persistenceUnitName="ticketReservation">
+	</bean>
+
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"></bean>
+
+	<bean id="menuUi" class="ui.MenuUi" p:selectEventUi-ref="selectEventUi"
+		p:selectUserUi-ref="selectUserUi" p:updateUserUi-ref="updateUserUi" />
+
+	<bean id="selectEventUi" class="ui.SelectEventUi" p:eventDao-ref="eventDao"
+		p:selectRankUi-ref="selectRankUi" />
+
+	<bean id="selectUserUi" class="ui.SelectUserUi" p:userDao-ref="userDao"
+		p:ticketDao-ref="ticketDao" p:deleteReservationUi-ref="deleteReservationUi" />
+
+	<bean id="eventDao" class="dao.impl.EventDaoImpl" />
+
+	<bean id="userDao" class="dao.impl.UserDaoImpl" />
+
+	<bean id="ticketDao" class="dao.impl.TicketDaoImpl" />
+
+	<bean id="reservationDao" class="dao.impl.ReservationDaoImpl" />
+
+	<bean id="rankDao" class="dao.impl.RankDaoImpl" />
+
+	<bean id="deleteReservationUi" class="ui.DeleteReservationUi"
+		p:reservationDao-ref="reservationDao" />
+
+	<bean id="updateUserUi" class="ui.UpdateUserUi" p:userDao-ref="userDao" />
+
+	<bean id="selectRankUi" class="ui.SelectRankUi" p:rankDao-ref="rankDao"
+		p:insertReservationUi-ref="insertReservationUi" />
+
+	<bean id="insertReservationUi" class="ui.InsertReservationUi"
+		p:userDao-ref="userDao" p:ticketDao-ref="ticketDao"
+		p:reservationDao-ref="reservationDao" />
+
+	<!-- 트랜잭션 매니저 설정 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+		p:entityManagerFactory-ref="entityManagerFactory" />
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+</beans>
