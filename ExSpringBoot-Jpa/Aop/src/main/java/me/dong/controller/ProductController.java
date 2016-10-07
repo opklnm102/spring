@@ -1,6 +1,6 @@
 package me.dong.controller;
 
-import me.dong.domain.Product;
+import me.dong.model.domain.Product;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

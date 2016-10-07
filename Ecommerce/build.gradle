@@ -1,0 +1,132 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.1.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+apply plugin: 'idea'
+
+war {
+	baseName = 'ecommerce'
+	version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	providedRuntime
+}
+
+// https://gist.github.com/EdwardBeckett/5377401
+// http://blog.jongminkim.co.kr/?p=386
+//sourceSets {
+//    generated {
+//        java {
+//            srcDirs = ['src/main/generated']
+//        }
+//    }
+//}
+//
+//configurations{
+//    querydslapt
+//}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-aop')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	runtime('mysql:mysql-connector-java')
+//	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	// jsp
+	compile 'javax.servlet:jstl'
+    compile 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    // lombok
+    compileOnly "org.projectlombok:lombok:1.16.10"
+
+    // apache commons
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'commons-io:commons-io:2.5'
+
+    // queryDSL
+    compile 'com.mysema.querydsl:querydsl-jpa:3.7.2'
+    compile 'com.mysema.querydsl:querydsl-apt:3.7.2'
+}
+
+//task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types'){
+//    source = sourceSets.main.java
+//    classpath = configurations.compile + configurations.querydslapt
+//    options.compilerArgs = [
+//            "-proc:only",
+//            "-processor", "com.mysema.query.apt.jpa.JPAAnnotationProcessor"
+//    ]
+//    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+//}
+//
+//compileJava {
+//    dependsOn generateQueryDSL
+//    source generateQueryDSL.destinationDir
+//}
+//
+//compileGeneratedJava {
+//    dependsOn generateQueryDSL
+//    options.warnings = false
+//    classpath += sourceSets.main.runtimeClasspath
+//}
+//
+//clean {
+//    delete sourceSets.generated.java.srcDirs
+//}
+//
+//idea {
+//    module {
+//        sourceDirs += file('src/main/generated')
+//    }
+//}
+
+//https://discuss.gradle.org/t/integrating-spring-boot-querydsl-into-gradle-build/15421/3
+compileJava {
+    options.compilerArgs << "-s"
+    options.compilerArgs << "$projectDir/generated/java"
+
+    doFirst {
+        // make sure that directory exists
+        file(new File(projectDir, "/generated/java")).mkdirs()
+    }
+}
+
+clean.doLast {
+    // clean-up directory when necessary
+    file(new File(projectDir, "/generated")).deleteDir()
+}
+
+sourceSets {
+    generated {
+        java {
+            srcDir "$projectDir/generated/java"
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file('src/main/generated')
+    }
+}

@@ -1,7 +1,7 @@
 package me.dong.controller;
 
-import me.dong.domain.User;
-import me.dong.service.UserService;
+import me.dong.model.domain.User;
+import me.dong.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
