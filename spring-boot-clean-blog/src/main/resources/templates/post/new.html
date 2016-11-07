@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>포스트</title>
+    <script th:src="@{/markdown/js/markdown-it.js}"></script>
+    <script th:src="@{/markdown/js/markdown-it-footnote.js}"></script>
+    <script th:src="@{/markdown/js/highlight.pack.js}"></script>
+    <script th:src="@{/markdown/js/emojify.js}"></script>
+    <script th:src="@{/markdown/js/rawinflate.js}"></script>
+    <script th:src="@{/markdown/js/rawdeflate.js}"></script>
+    <script th:src="@{/codemirror/lib/codemirror.js}"></script>
+    <script th:src="@{/codemirror/overlay.js}"></script>
+    <script th:src="@{/codemirror/xml/xml.js}"></script>
+    <script th:src="@{/codemirror/markdown/markdown.js}"></script>
+    <script th:src="@{/codemirror/gfm/gfm.js}"></script>
+    <script th:src="@{/codemirror/javascript/javascript.js}"></script>
+    <script th:src="@{/codemirror/css/css.js}"></script>
+    <script th:src="@{/codemirror/htmlmixed/htmlmixed.js}"></script>
+    <script th:src="@{/codemirror/lib/util/continuelist.js}"></script>
+    <link rel="stylesheet" th:href="@{/markdown/css/base16-light.css}"/>
+    <link rel="stylesheet" th:href="@{/codemirror/lib/codemirror.css}"/>
+    <!--<link rel="stylesheet" th:href="@{/markdown/css/default.css}"/>-->
+    <link rel="stylesheet" th:href="@{/markdown/css/github-gist.css}"/>
+    <link rel="stylesheet" th:href="@{/css/post.css}"/>
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <script th:src="@{/js/post.js}"></script>
+</head>
+
+<body>
+<form class="form-horizontal well bs-component col-lg-10 col-lg-offset-1" th:action="@{/posts}"
+      th:object="${postDto}" method="post" th:id="post">
+    <fieldset>
+        <div class="form-group" th:classappend="(${#fields.hasErrors('title')}? ' has-error')">
+            <label for="title" class="col-lg-2 control-label">Title</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" id="title" name="title" th:field="*{title}"
+                       placeholder="Title"/>
+                <span class="help-block" th:if="${#fields.hasErrors('title')}"
+                      th:errors="*{title}">Incorrect title</span>
+            </div>
+        </div>
+
+        <div class="form-group" th:classappend="(${#fields.hasErrors('categoryId')}? ' has-error')">
+            <label class="col-lg-2 control-label">categories</label>
+            <div class="btn-group" data-toggle="buttons" th:each="category : ${categories}">
+                <label class="btn btn-primary active">
+                    <input th:onclick="'changeCategory(\'' + ${category.name} + '\')'" name="categoryId" type="radio" th:text="${category.name}" th:value="${category.id}" />
+                </label>
+            </div>
+            <span class="help-block" style="text-align: center;" th:if="${#fields.hasErrors('categoryId')}"
+                  th:errors="*{categoryId}">Incorrect title</span>
+
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">category</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" id="categoryName" disabled="disabled"/>
+            </div>
+        </div>
+        <!--실제 포스팅할 부분-->
+        <div id="in">
+            <!--code -> 원본코드, content -> code를 html로 변환해 들어감-->
+            <input type="hidden" id="content" name="content" th:field="*{content}"/>
+            <input type="hidden" id="code" th:field="*{code}" />
+        </div>
+        <!--글을 쓰면 바로 마크다운으로 확인할 수 있는 부분-->
+        <div id="out" >
+        </div>
+        <div id="messageContent">
+            <label for="content" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></label>
+        </div>
+        <div id="menu">
+            <input class="btn btn-primary" type="button" value="Submit" onclick="saveAsHtml()"/>
+        </div>
+    </fieldset>
+</form>
+</body>
+</html>
