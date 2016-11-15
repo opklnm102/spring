@@ -5,7 +5,7 @@
 ### 자동 구성
 많은 애플리케이션에 공통으로 필요한 애플리케이션 기능을 자동으로 구성
 
-### Starter Dependence
+### Starter Dependency
 어떤 기능이 필요한지 알려주면 필요한 라이브러리를 빌드에 추가한다는 것을 보장
 
 ### CLI(명령줄 인터페이스
@@ -664,27 +664,27 @@ public class ServerWebTests {
 
 ### WAR파일 생성
 1. plugin 추가, `jar`구성을 `war`로 수정
-```sh
-apply plugin: 'war'
+  ```sh
+  apply plugin: 'war'
 
-war {  // jar -> war
-  baseName= 'readinglist'
-  version= '0.0.1-SNAPSHOT'
-}
-```
+  war {  // jar -> war
+    baseName= 'readinglist'
+    version= '0.0.1-SNAPSHOT'
+  }
+  ```
 2. 서블릿 초기화 클래스 추가
-```java
-/*
-DispatcherServlet 구성
-SpringApplicationContext에 있는 Filter, Servlet, ServletContextInitializer 타입의 Bean을 검색, 서블릿 컨테이너에 바인드
- */
-public class ProductListServletInitializer extends SpringBootServletInitializer {
+  ```java
+  /*
+  DispatcherServlet 구성
+  SpringApplicationContext에 있는 Filter, Servlet, ServletContextInitializer 타입의 Bean을 검색, 서블릿 컨테이너에 바인드
+  */
+  public class ProductListServletInitializer extends SpringBootServletInitializer {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        // Spring 환경 구성 클래스 지정
-        return builder.sources(ProductListApplication.class);
-    }
-}
-```
+      @Override
+      protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+          // Spring 환경 구성 클래스 지정
+          return builder.sources(ProductListApplication.class);
+      }
+  }
+  ```
 3. `$gradle build` or `$mvn package`
