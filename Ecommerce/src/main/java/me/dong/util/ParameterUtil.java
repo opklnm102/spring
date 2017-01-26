@@ -1,10 +1,10 @@
 package me.dong.util;
 
+import me.dong.exception.InvalidParameterException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.InvalidParameterException;
 import java.util.Collection;
 
 public class ParameterUtil {
