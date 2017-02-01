@@ -6,6 +6,20 @@
 </head>
 <body>
 <h2>Welcome~! {{name}}</h2>
+{{#is_age}}
 <h2>나이는 {{age}}!</h2>
+{{texted_value}}
+{{/is_age}}
+<div>
+    HTML 태그 {{{text_html}}}
+</div>
+
+<div>
+    <h3>리스트</h3>
+    {{#users}}
+        <b>{{name}}</b><br/>
+    {{/users}}
+</div>
+
 </body>
 </html>

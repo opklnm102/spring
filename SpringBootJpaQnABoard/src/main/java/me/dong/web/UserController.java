@@ -20,12 +20,12 @@ public class UserController {
     public String create(User user) {
         System.out.println("user: " + user);
         users.add(user);
-        return "redirect:/list";
+        return "redirect:/list";  // 다른 url로 넘김
     }
 
     @GetMapping("/list")
     public String list(Model model){
-        model.addAttribute("users", users);
-        return "list";
+        model.addAttribute("users", users);  // model에 data 저장해서 view(list.html)로 전달
+        return "list";  // templates/list.html을 호출 -> .hml은 Spring이 자동으로 붙인다
     }
 }
