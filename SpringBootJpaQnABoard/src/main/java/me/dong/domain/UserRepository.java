@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 // SpringBoot가 알아서 생성
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUserId(String userId);
 }
