@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringBootJpaQnABoardApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringBootJpaQnABoardApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootJpaQnABoardApplication.class, args);
         System.out.println("Boot Run!!");
     }
 }
