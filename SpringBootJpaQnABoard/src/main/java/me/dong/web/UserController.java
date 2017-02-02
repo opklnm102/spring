@@ -53,6 +53,13 @@ public class UserController {
         return "user/sign_in_form";
     }
 
+    /**
+     * 로그인 후 홈으로 이동
+     * @param session 세션
+     * @param userId 회원 id
+     * @param password 비밀번호
+     * @return redirection 시킬 url
+     */
     @PostMapping("/sign_in")
     public String signIn(HttpSession session, String userId, String password){
         User user = userRepository.findByUserId(userId);
@@ -67,6 +74,16 @@ public class UserController {
         System.out.println("Login Success!");
         session.setAttribute("user", user);  // 세션에 정보 저장
 
+        return "redirect:/";
+    }
+
+    /**
+     * 로그아웃 - 세션정보 삭제 후 홈으로 이동
+     * @return
+     */
+    @GetMapping("/sign_out")
+    public String signOut(HttpSession session){
+        session.removeAttribute("user");
         return "redirect:/";
     }
 
