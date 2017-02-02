@@ -17,7 +17,7 @@ public class User {
     @GeneratedValue  // DB에서 자동으로 1씩 증가
     private Long id;
 
-    @Column(nullable = false, length = 20)  // NotNull
+    @Column(nullable = false, length = 20, unique = true)  // NotNull, Unique
     private String userId;
 
     private String name;
@@ -40,6 +40,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getPassword() {

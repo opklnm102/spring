@@ -55,35 +55,37 @@ public class UserController {
 
     /**
      * 로그인 후 홈으로 이동
-     * @param session 세션
-     * @param userId 회원 id
+     *
+     * @param session  세션
+     * @param userId   회원 id
      * @param password 비밀번호
      * @return redirection 시킬 url
      */
     @PostMapping("/sign_in")
-    public String signIn(HttpSession session, String userId, String password){
+    public String signIn(HttpSession session, String userId, String password) {
         User user = userRepository.findByUserId(userId);
-        if(user == null){
+        if (user == null) {
             System.out.println("Login Failure!");
             return "redirect:/users/sign_in_form";
         }
-        if(!password.equals(user.getPassword())){
+        if (!password.equals(user.getPassword())) {
             System.out.println("Login Failure!");
             return "redirect:/users/sign_in_form";
         }
         System.out.println("Login Success!");
-        session.setAttribute("user", user);  // 세션에 정보 저장
+        session.setAttribute("sessiondUser", user);  // 세션에 정보 저장
 
         return "redirect:/";
     }
 
     /**
      * 로그아웃 - 세션정보 삭제 후 홈으로 이동
+     *
      * @return
      */
     @GetMapping("/sign_out")
-    public String signOut(HttpSession session){
-        session.removeAttribute("user");
+    public String signOut(HttpSession session) {
+        session.removeAttribute("sessiondUser");
         return "redirect:/";
     }
 
@@ -105,8 +107,20 @@ public class UserController {
      * @return view path
      */
     @GetMapping("/{id}/form")
-    public String updateForm(Model model, @PathVariable(name = "id") Long userId) {
+    public String updateForm(Model model, HttpSession session,
+                             @PathVariable(name = "id") Long userId) {
+        Object tempdUser = session.getAttribute("sessiondUser");
+        if (tempdUser == null) {  // 로그인이 안되있으면 로그인 화면으로 이동
+            return "redirect:/users/sign_in_form";
+        }
+        User sessiondUser = (User) tempdUser;
+//        User user = userRepository.findOne(sessiondUser.getId());
+
+        if (!userId.equals(sessiondUser.getId())) {
+            throw new IllegalStateException("You can't update the other user");
+        }
         User user = userRepository.findOne(userId);
+
         model.addAttribute("user", user);
         return "/user/update_form";
     }
@@ -115,13 +129,21 @@ public class UserController {
      * 회원정보 수정 후 회원목록 화면으로 이동
      *
      * @param userId  회원 id
-     * @param newUser 수정할 회원정보
+     * @param updatedUser 수정할 회원정보
      * @return redirection 시킬 url
      */
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long userId, User newUser) {
+    public String update(HttpSession session, @PathVariable("id") Long userId, User updatedUser) {
+        Object tempdUser = session.getAttribute("sessiondUser");
+        if (tempdUser == null) {  // 로그인이 안되있으면 로그인 화면으로 이동
+            return "redirect:/users/sign_in_form";
+        }
+        User sessiondUser = (User) tempdUser;
+        if (!userId.equals(sessiondUser.getId())) {
+            throw new IllegalStateException("You can't update the other user");
+        }
         User user = userRepository.findOne(userId);
-        user.update(newUser);
+        user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/users";
     }
