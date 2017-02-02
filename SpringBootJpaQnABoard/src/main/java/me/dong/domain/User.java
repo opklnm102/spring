@@ -42,6 +42,10 @@ public class User {
         this.email = email;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public boolean matchId(Long newId){
         if(newId == null){
             return false;
