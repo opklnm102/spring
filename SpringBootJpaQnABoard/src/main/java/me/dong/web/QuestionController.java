@@ -5,9 +5,8 @@ import me.dong.domain.QuestionRepository;
 import me.dong.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,16 +21,15 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     /**
-     * Q&A 화면으로 연결
+     * 질문 등록 화면으로 연결
      *
      * @return view path
      */
     @GetMapping("/qna_form")
     public String questionForm(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/sign_in_form";
+            return "/user/sign_in_form";
         }
-
         return "qna/qna_form";
     }
 
@@ -47,11 +45,97 @@ public class QuestionController {
     @PostMapping("")
     public String create(HttpSession session, String title, String contents) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/sign_in_form";
+            return "/user/sign_in_form";
         }
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+        Question newQuestion = new Question(sessionUser, title, contents);
         questionRepository.save(newQuestion);
         return "redirect:/";
+    }
+
+    /**
+     * 질문 상세보기 화면으로 이동
+     *
+     * @param model      전달할 질문 정보
+     * @param questionId 질문 id
+     * @return view path
+     */
+    @GetMapping("/{id}")
+    public String show(Model model, @PathVariable("id") Long questionId) {
+        Question question = questionRepository.findOne(questionId);
+        model.addAttribute("question", question);
+        return "/qna/show";
+    }
+
+    /**
+     * 질문 수정 화면으로 이동
+     *
+     * @param model      전달할 질문 정보
+     * @param questionId 질문 id
+     * @return view path
+     */
+    @GetMapping("/{id}/form")
+    public String updateForm(Model model, HttpSession session, @PathVariable("id") Long questionId) {
+        try {
+            Question question = questionRepository.findOne(questionId);
+            hasPermission(session, question);
+            model.addAttribute("question", question);
+            return "/qna/update_form";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/sign_in_form";
+        }
+    }
+
+    private boolean hasPermission(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!question.matchWriter(loginUser)) {
+            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제 가능합니다.");
+        }
+        return true;
+    }
+
+    /**
+     * 질문 정보 수정 후 질문 상세보기 화면으로 이동
+     *
+     * @param questionId 질문 id
+     * @param title      제목
+     * @param contents   내용
+     * @return redirection 시킬 url
+     */
+    @PutMapping("/{id}")
+    public String update(HttpSession session, Model model, @PathVariable("id") Long questionId, String title, String contents) {
+        try {
+            Question question = questionRepository.findOne(questionId);
+            hasPermission(session, question);
+            question.update(title, contents);
+            questionRepository.save(question);
+            return String.format("redirect:/questions/%d", questionId);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/sign_in_form";
+        }
+    }
+
+    /**
+     * 질문 삭제 후 홈으로 이동
+     *
+     * @param questionId 질문 id
+     * @return redirection 시킬 url
+     */
+    @DeleteMapping("/{id}")
+    public String delete(HttpSession session, Model model, @PathVariable("id") Long questionId) {
+        try {
+            Question question = questionRepository.findOne(questionId);
+            hasPermission(session, question);
+            questionRepository.delete(questionId);
+            return "redirect:/";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/sign_in_form";
+        }
     }
 }

@@ -123,14 +123,6 @@ public class UserController {
     }
 
     /**
-     *
-     *
-     * @param userId
-     * @param updatedUser
-     * @return
-     */
-
-    /**
      * 회원정보 수정 후 회원목록 화면으로 이동
      *
      * @param session     세션
