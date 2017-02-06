@@ -1,9 +1,10 @@
 package me.dong.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 /**
  * 데이터를 담을 클래스
@@ -11,19 +12,19 @@ import javax.persistence.Id;
  * <form>의 name과 setter의 이름이 같아야 스프링에서 넣어준다
  */
 @Entity  // Table과 매핑 설정
-public class User {
-
-    @Id  // PK 설정
-    @GeneratedValue  // DB에서 자동으로 1씩 증가
-    private Long id;
+public class User extends AbstractEntity {
 
     @Column(nullable = false, length = 20, unique = true)  // NotNull, Unique
+    @JsonProperty
     private String userId;
 
+    @JsonProperty
     private String name;
 
+    @JsonIgnore
     private String password;
 
+    @JsonProperty
     private String email;
 
     public void setUserId(String userId) {
@@ -46,11 +47,11 @@ public class User {
         return userId;
     }
 
-    public boolean matchId(Long newId){
-        if(newId == null){
+    public boolean matchId(Long newId) {
+        if (newId == null) {
             return false;
         }
-        return newId.equals(id);
+        return newId.equals(getId());
     }
 
     public boolean matchPassword(String newPassword) {
@@ -69,25 +70,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
+                super.toString() + '\'' +
                 "userId='" + userId + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return id != null ? id.equals(user.id) : user.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
     }
 }
